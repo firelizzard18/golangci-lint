@@ -205,7 +205,7 @@ func getDefaultExclusions() string {
 
 func getLintersListMarkdown(enabled bool) string {
 	var neededLcs []*linter.Config
-	lcs := lintersdb.NewManager(nil, nil).GetAllSupportedLinterConfigs()
+	lcs := lintersdb.NewManager(nil, nil, nil).GetAllSupportedLinterConfigs()
 	for _, lc := range lcs {
 		if lc.Internal {
 			continue
@@ -323,7 +323,7 @@ type authorDetails struct {
 func getThanksList() string {
 	addedAuthors := map[string]*authorDetails{}
 
-	for _, lc := range lintersdb.NewManager(nil, nil).GetAllSupportedLinterConfigs() {
+	for _, lc := range lintersdb.NewManager(nil, nil, nil).GetAllSupportedLinterConfigs() {
 		if lc.Internal {
 			continue
 		}
@@ -491,7 +491,7 @@ func extractExampleSnippets(example []byte) (*SettingSnippets, error) {
 }
 
 func getLintersSettingSections(node, nextNode *yaml.Node) (string, error) {
-	lcs := lintersdb.NewManager(nil, nil).GetAllSupportedLinterConfigs()
+	lcs := lintersdb.NewManager(nil, nil, nil).GetAllSupportedLinterConfigs()
 
 	var lintersDesc = make(map[string]string)
 	for _, lc := range lcs {

@@ -34,6 +34,7 @@ import (
 	"github.com/golangci/golangci-lint/pkg/golinters/goanalysis/load"
 	"github.com/golangci/golangci-lint/pkg/goutil"
 	"github.com/golangci/golangci-lint/pkg/lint"
+	"github.com/golangci/golangci-lint/pkg/lint/linter"
 	"github.com/golangci/golangci-lint/pkg/lint/lintersdb"
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/packages"
@@ -76,7 +77,8 @@ type runCommand struct {
 
 	opts runOptions
 
-	cfg *config.Config
+	cfg           *config.Config
+	customLinters []*linter.Config
 
 	buildInfo BuildInfo
 
@@ -98,14 +100,15 @@ type runCommand struct {
 	exitCode int
 }
 
-func newRunCommand(logger logutils.Log, cfg *config.Config, reportData *report.Data, info BuildInfo) *runCommand {
+func newRunCommand(logger logutils.Log, cfg *config.Config, reportData *report.Data, info BuildInfo, customLinters []*linter.Config) *runCommand {
 	c := &runCommand{
-		viper:      viper.New(),
-		log:        logger,
-		debugf:     logutils.Debug(logutils.DebugKeyExec),
-		cfg:        cfg,
-		reportData: reportData,
-		buildInfo:  info,
+		viper:         viper.New(),
+		log:           logger,
+		debugf:        logutils.Debug(logutils.DebugKeyExec),
+		cfg:           cfg,
+		customLinters: customLinters,
+		reportData:    reportData,
+		buildInfo:     info,
 	}
 
 	runCmd := &cobra.Command{
@@ -171,7 +174,7 @@ func (c *runCommand) persistentPostRunE(_ *cobra.Command, _ []string) error {
 }
 
 func (c *runCommand) preRunE(_ *cobra.Command, _ []string) error {
-	c.dbManager = lintersdb.NewManager(c.cfg, c.log)
+	c.dbManager = lintersdb.NewManager(c.cfg, c.customLinters, c.log)
 	c.enabledLintersSet = lintersdb.NewEnabledSet(c.dbManager,
 		lintersdb.NewValidator(c.dbManager), c.log.Child(logutils.DebugKeyLintersDB), c.cfg)
 

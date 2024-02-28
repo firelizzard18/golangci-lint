@@ -23,7 +23,8 @@ type lintersCommand struct {
 
 	opts lintersOptions
 
-	cfg *config.Config
+	cfg           *config.Config
+	customLinters []*linter.Config
 
 	log logutils.Log
 
@@ -31,11 +32,12 @@ type lintersCommand struct {
 	enabledLintersSet *lintersdb.EnabledSet
 }
 
-func newLintersCommand(logger logutils.Log, cfg *config.Config) *lintersCommand {
+func newLintersCommand(logger logutils.Log, cfg *config.Config, customLinters []*linter.Config) *lintersCommand {
 	c := &lintersCommand{
-		viper: viper.New(),
-		cfg:   cfg,
-		log:   logger,
+		viper:         viper.New(),
+		cfg:           cfg,
+		customLinters: customLinters,
+		log:           logger,
 	}
 
 	lintersCmd := &cobra.Command{
@@ -65,7 +67,7 @@ func (c *lintersCommand) preRunE(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("can't load config: %w", err)
 	}
 
-	c.dbManager = lintersdb.NewManager(c.cfg, c.log)
+	c.dbManager = lintersdb.NewManager(c.cfg, c.customLinters, c.log)
 	c.enabledLintersSet = lintersdb.NewEnabledSet(c.dbManager,
 		lintersdb.NewValidator(c.dbManager), c.log.Child(logutils.DebugKeyLintersDB), c.cfg)
 

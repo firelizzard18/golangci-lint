@@ -31,7 +31,7 @@ func (d dummyLogger) Child(_ string) logutils.Log {
 func (d dummyLogger) SetLevel(_ logutils.LogLevel) {}
 
 func TestEnabledSet_GetEnabledLintersMap(t *testing.T) {
-	m := NewManager(nil, nil)
+	m := NewManager(nil, nil, nil)
 
 	cfg := config.NewDefault()
 
@@ -55,7 +55,7 @@ func TestEnabledSet_GetEnabledLintersMap(t *testing.T) {
 }
 
 func TestEnabledSet_GetOptimizedLinters(t *testing.T) {
-	m := NewManager(nil, nil)
+	m := NewManager(nil, nil, nil)
 
 	cfg := config.NewDefault()
 
@@ -172,7 +172,7 @@ func TestEnabledSet_build(t *testing.T) {
 		},
 	}
 
-	m := NewManager(nil, nil)
+	m := NewManager(nil, nil, nil)
 	es := NewEnabledSet(m, NewValidator(m), dummyLogger{}, nil)
 
 	for _, c := range cases {
@@ -198,7 +198,7 @@ func TestEnabledSet_build(t *testing.T) {
 }
 
 func TestEnabledSet_combineGoAnalysisLinters(t *testing.T) {
-	m := NewManager(nil, nil)
+	m := NewManager(nil, nil, nil)
 
 	es := NewEnabledSet(m, NewValidator(m), dummyLogger{}, config.NewDefault())
 

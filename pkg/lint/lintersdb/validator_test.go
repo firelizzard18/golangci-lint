@@ -248,7 +248,7 @@ var validateAllDisableEnableOptionsTestCases = []validatorTestCase{
 }
 
 func TestValidator_validateEnabledDisabledLintersConfig(t *testing.T) {
-	v := NewValidator(NewManager(nil, nil))
+	v := NewValidator(NewManager(nil, nil, nil))
 
 	var testCases []validatorTestCase
 	testCases = append(testCases, validateLintersNamesTestCases...)
@@ -268,7 +268,7 @@ func TestValidator_validateEnabledDisabledLintersConfig(t *testing.T) {
 }
 
 func TestValidator_validateEnabledDisabledLintersConfig_error(t *testing.T) {
-	v := NewValidator(NewManager(nil, nil))
+	v := NewValidator(NewManager(nil, nil, nil))
 
 	var testCases []validateErrorTestCase
 	testCases = append(testCases, validateLintersNamesErrorTestCases...)
@@ -290,7 +290,7 @@ func TestValidator_validateEnabledDisabledLintersConfig_error(t *testing.T) {
 }
 
 func TestValidator_validateLintersNames(t *testing.T) {
-	v := NewValidator(NewManager(nil, nil))
+	v := NewValidator(NewManager(nil, nil, nil))
 
 	for _, test := range validateLintersNamesTestCases {
 		test := test
@@ -304,7 +304,7 @@ func TestValidator_validateLintersNames(t *testing.T) {
 }
 
 func TestValidator_validateLintersNames_error(t *testing.T) {
-	v := NewValidator(NewManager(nil, nil))
+	v := NewValidator(NewManager(nil, nil, nil))
 
 	for _, test := range validateLintersNamesErrorTestCases {
 		test := test

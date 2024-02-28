@@ -17,13 +17,14 @@ import (
 type helpCommand struct {
 	cmd *cobra.Command
 
-	dbManager *lintersdb.Manager
+	dbManager     *lintersdb.Manager
+	customLinters []*linter.Config
 
 	log logutils.Log
 }
 
-func newHelpCommand(logger logutils.Log) *helpCommand {
-	c := &helpCommand{log: logger}
+func newHelpCommand(logger logutils.Log, customLinters []*linter.Config) *helpCommand {
+	c := &helpCommand{log: logger, customLinters: customLinters}
 
 	helpCmd := &cobra.Command{
 		Use:   "help",
@@ -53,7 +54,7 @@ func newHelpCommand(logger logutils.Log) *helpCommand {
 func (c *helpCommand) preRun(_ *cobra.Command, _ []string) {
 	// The command doesn't depend on the real configuration.
 	// It just needs the list of all plugins and all presets.
-	c.dbManager = lintersdb.NewManager(config.NewDefault(), c.log)
+	c.dbManager = lintersdb.NewManager(config.NewDefault(), c.customLinters, c.log)
 }
 
 func (c *helpCommand) execute(_ *cobra.Command, _ []string) {

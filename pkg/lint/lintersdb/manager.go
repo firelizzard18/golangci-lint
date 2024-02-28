@@ -17,12 +17,18 @@ type Manager struct {
 	customLinters []*linter.Config
 }
 
-func NewManager(cfg *config.Config, log logutils.Log) *Manager {
+func NewManager(cfg *config.Config, customLinters []*linter.Config, log logutils.Log) *Manager {
 	m := &Manager{cfg: cfg, log: log}
 	m.customLinters = m.getCustomLinterConfigs()
 
 	nameToLCs := make(map[string][]*linter.Config)
 	for _, lc := range m.GetAllSupportedLinterConfigs() {
+		for _, name := range lc.AllNames() {
+			nameToLCs[name] = append(nameToLCs[name], lc)
+		}
+	}
+
+	for _, lc := range customLinters {
 		for _, name := range lc.AllNames() {
 			nameToLCs[name] = append(nameToLCs[name], lc)
 		}

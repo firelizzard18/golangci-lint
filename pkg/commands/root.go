@@ -11,12 +11,13 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/golangci/golangci-lint/pkg/config"
+	"github.com/golangci/golangci-lint/pkg/lint/linter"
 	"github.com/golangci/golangci-lint/pkg/logutils"
 	"github.com/golangci/golangci-lint/pkg/report"
 )
 
-func Execute(info BuildInfo) error {
-	return newRootCommand(info).Execute()
+func Execute(info BuildInfo, customLinters ...*linter.Config) error {
+	return newRootCommand(info, customLinters).Execute()
 }
 
 type rootOptions struct {
@@ -33,7 +34,7 @@ type rootCommand struct {
 	log logutils.Log
 }
 
-func newRootCommand(info BuildInfo) *rootCommand {
+func newRootCommand(info BuildInfo, customLinters []*linter.Config) *rootCommand {
 	c := &rootCommand{}
 
 	rootCmd := &cobra.Command{
@@ -61,14 +62,14 @@ func newRootCommand(info BuildInfo) *rootCommand {
 
 	// Dedicated configuration for each command to avoid side effects of bindings.
 	rootCmd.AddCommand(
-		newLintersCommand(log, config.NewDefault()).cmd,
-		newRunCommand(log, config.NewDefault(), reportData, info).cmd,
+		newLintersCommand(log, config.NewDefault(), customLinters).cmd,
+		newRunCommand(log, config.NewDefault(), reportData, info, customLinters).cmd,
 		newCacheCommand().cmd,
 		newConfigCommand(log).cmd,
 		newVersionCommand(info).cmd,
 	)
 
-	rootCmd.SetHelpCommand(newHelpCommand(log).cmd)
+	rootCmd.SetHelpCommand(newHelpCommand(log, customLinters).cmd)
 
 	c.log = log
 	c.cmd = rootCmd

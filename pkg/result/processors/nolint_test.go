@@ -34,7 +34,7 @@ func newNolint2FileIssue(line int) result.Issue {
 }
 
 func newTestNolintProcessor(log logutils.Log) *Nolint {
-	return NewNolint(log, lintersdb.NewManager(nil, nil), nil)
+	return NewNolint(log, lintersdb.NewManager(nil, nil, nil), nil)
 }
 
 func getMockLog() *logutils.MockLog {
@@ -283,7 +283,7 @@ func TestNolintUnused(t *testing.T) {
 		enabledSetLog.On("Infof", "Active %d linters: %s", len(enabledLinters), enabledLinters)
 
 		cfg := &config.Config{Linters: config.Linters{DisableAll: true, Enable: enabledLinters}}
-		dbManager := lintersdb.NewManager(cfg, nil)
+		dbManager := lintersdb.NewManager(cfg, nil, nil)
 
 		enabledLintersSet := lintersdb.NewEnabledSet(dbManager, lintersdb.NewValidator(dbManager), enabledSetLog, cfg)
 
@@ -347,7 +347,7 @@ func TestNolintUnused(t *testing.T) {
 		enabledSetLog.On("Infof", "Active %d linters: %s", 1, []string{"nolintlint"})
 
 		cfg := &config.Config{Linters: config.Linters{DisableAll: true, Enable: []string{"nolintlint"}}}
-		dbManager := lintersdb.NewManager(cfg, nil)
+		dbManager := lintersdb.NewManager(cfg, nil, nil)
 		enabledLintersSet := lintersdb.NewEnabledSet(dbManager, lintersdb.NewValidator(dbManager), enabledSetLog, cfg)
 
 		enabledLintersMap, err := enabledLintersSet.GetEnabledLintersMap()
